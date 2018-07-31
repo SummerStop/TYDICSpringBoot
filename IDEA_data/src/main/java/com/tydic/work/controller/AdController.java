@@ -13,6 +13,7 @@ public class AdController {
 
     @RequestMapping(value = "/insert", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
+    //添加
     public String insert(@RequestParam("cname") String cname , @RequestParam("color") String color , @RequestParam("samount") Integer samount , @RequestParam("rname") String rname ) {
         System.out.println(cname);
         System.out.println("asdasdasdasdasdas");
@@ -31,7 +32,7 @@ public class AdController {
             Integer rid = adService.selectbyrname(rname);
             adService.insert_relation(rid,cid,samount);
         }
-        return "添加成功";
+        return "/";
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = "application/json; charset=utf-8")

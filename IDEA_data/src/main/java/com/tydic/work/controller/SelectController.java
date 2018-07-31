@@ -1,9 +1,6 @@
 package com.tydic.work.controller;
 
-import com.tydic.work.bean.Relation;
-import com.tydic.work.bean.Repository;
-import com.tydic.work.bean.SearchSku;
-import com.tydic.work.bean.Sku;
+import com.tydic.work.bean.*;
 import com.tydic.work.dao.RepositoryDao;
 import com.tydic.work.dao.SelectDao;
 import com.tydic.work.service.SelectService;
@@ -11,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -29,30 +28,60 @@ public class SelectController {
         return "Hello,Word!!!xxxxxxxxxxxx";
     }
 
-    @RequestMapping(value = "/repo", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public List<Repository> getRepo() {
-        return selectService.getListRepo();
-    }
+    public ModelAndView getRepo() {
+        ModelAndView mv = new ModelAndView("repo");
+        List<Repository> list = selectService.getListRepo();
+        mv.addObject("repoList",list);
+        return mv;
+    }        //仓库列表
 
     @RequestMapping(value = "/getCargo", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public List<Relation> getCargo() {
+    public ModelAndView getCargo(@RequestParam("rid") Integer rid) {
         //测试仓库1
-        return selectService.getCargoByRid(1);
-    }
+        ModelAndView mv = new ModelAndView("cargo");
+        List<repoInfo> list = selectService.getRepoInfoByRid(rid);
+        mv.addObject("cargoList",list);
+        Repository repo = selectService.getRepoByRid(rid);
+        mv.addObject("repo",repo);
+        return mv;
+    }   //仓库里的货物
 
     @RequestMapping(value = "/getSku", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public List<Sku> getSku() {
+    public ModelAndView getSku(@RequestParam("cid") Integer cid) {
         //测试货物1
-        return selectService.getSkuByCid(1);
+        ModelAndView mv = new ModelAndView("sku");
+        List<Sku> list = selectService.getSkuByCid(cid);
+        mv.addObject("skuList",list);
+        Repository repo = selectService.getRepoNameByCid(cid);
+        mv.addObject("repoName",repo);
+        return mv;
+    }        //货物详情
+
+    @RequestMapping(value = "/Search", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public ModelAndView getSearch(@RequestParam("username") String username){
+        //测试模糊搜索查询
+        ModelAndView mv = new ModelAndView("SearchSku");
+        System.out.println(username);
+        List<SearchSku> list = selectService.SearchByCargoName("%"+username+"%");
+        mv.addObject("SearchList",list);
+        return mv;
     }
 
-    @RequestMapping(value = "/Search", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    //得到修改的sku
+    @RequestMapping(value = "/getSkuBySid", method = RequestMethod.GET,produces = "application/json; charset=utf-8")
     @ResponseBody
-    public List<SearchSku> getSearch(){
+    public ModelAndView getSkuBySid(@RequestParam("sid") Integer sid,@RequestParam("cid") Integer cid){
         //测试模糊搜索查询
-        return selectService.SearchByCargoName("%1%");
+        ModelAndView mv = new ModelAndView("member-edit");
+        Sku sku = selectService.getSkuBySid(sid);
+        Cargo cargo = selectService.getCargoByCid(cid);
+        mv.addObject("skuInfo",sku);
+        mv.addObject("cargo",cargo);
+        return mv;
     }
 }

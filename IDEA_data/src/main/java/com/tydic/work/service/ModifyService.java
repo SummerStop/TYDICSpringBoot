@@ -10,8 +10,24 @@ public class ModifyService {
     @Autowired
     private ModifyDao modifyDao;
 
-    public void updateCargoInfo(int sid, String cname, String color, int amount){
-        modifyDao.updateCargoName(sid, cname);
+    //修改sku信息
+    public void updateCargoInfo(Integer sid, String color, Integer amount){
         modifyDao.updateCargoSku(sid ,color, amount);
     }
+
+    //根据sid修改数量ramount
+    public void updateRamountBySid(Integer sid, Integer ramount){
+        modifyDao.updateRamountBySid(sid,ramount);
+    }
+
+    //根据sid获取数量ramount
+    public Integer selectRamountBySid(Integer sid){
+        return modifyDao.selectRamountByCid(sid);
+    }
+
+    //根据sid获取数量samount
+    public Integer selectSamountBySid(Integer sid){
+        return modifyDao.selectSamountByCid(sid);
+    }
+
 }
