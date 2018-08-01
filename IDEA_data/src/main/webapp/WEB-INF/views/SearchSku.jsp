@@ -48,8 +48,7 @@
     </form>
     <xblock><button class="layui-btn layui-btn-danger" onclick="delAll()">
         <i class="layui-icon">&#xe640;</i>批量删除</button>
-        <button class="layui-btn" onclick="member_add('添加货物信息','/static/member-add.html','600','500')">
-            <i class="layui-icon">&#xe608;</i>添加</button>
+
         <span class="x-right" style="line-height:40px">共有数据：20 条</span></xblock>
     <table class="layui-table">
         <thead>
@@ -62,7 +61,6 @@
             <th>货物名称</th>
             <th>货物总量</th>
             <th>点击查看详情</th>
-            <th>操作</th>
 
         </tr>
         </thead>
@@ -79,19 +77,6 @@
                 <td >
                     <a href="/getSku?cid=${list.cid}" class="layui-btn layui-btn-normal layui-btn-mini"
                        target="view_window">查看详情</a>
-                </td>
-
-                <td class="td-manage">
-
-                    <a title="编辑" href="javascript:;" onclick="member_edit('编辑','/static/member-edit.html','4','','510')"
-                       class="ml-5" style="text-decoration:none">
-                        <i class="layui-icon">&#xe642;</i>
-                    </a>
-
-                    <a title="删除" href="javascript:;" onclick="member_del(this,'1')"
-                       style="text-decoration:none">
-                        <i class="layui-icon">&#xe640;</i>
-                    </a>
                 </td>
             </tr>
         </c:forEach>
@@ -200,6 +185,20 @@
     function member_del(obj,id){
         layer.confirm('确认要删除吗？',function(index){
             //发异步删除数据
+            $.ajax({
+                url:'/delete',
+                data:{"sid":sid},
+                type:"get",
+                dataType:'json',
+                success:function(msg){
+                    if(msg=='1'){
+                        console.log('添加成功');
+                    }else{
+                        console.log('添加失败')
+                    }
+                }
+
+            })
             $(obj).parents("tr").remove();
             layer.msg('已删除!',{icon:1,time:1000});
         });
